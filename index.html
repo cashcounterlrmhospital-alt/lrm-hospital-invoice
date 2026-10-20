@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LRM Hospital | Invoice Maker</title>
+<style>
+:root{--ink:#172033;--muted:#687386;--line:#dce4ef;--bg:#f2f6fb;--blue:#2457d6;--blue2:#eaf0ff;--green:#137a52;--red:#b42318;--card:#fff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+header{background:#101a30;color:white;padding:18px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px}.logo{width:42px;height:42px;border-radius:12px;background:#315fe3;display:grid;place-items:center;font-weight:900;font-size:19px}.brand h1{margin:0;font-size:20px}.brand p{margin:2px 0 0;color:#b9c6df;font-size:12px}
+.top-actions{display:flex;gap:8px;flex-wrap:wrap}.layout{max-width:1440px;margin:22px auto;padding:0 18px;display:grid;grid-template-columns:minmax(320px,1fr) minmax(360px,1.05fr);gap:18px;align-items:start}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:0 4px 18px #12264a0a;overflow:hidden}.panel-head{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}.panel-head h2{font-size:15px;margin:0}.panel-body{padding:18px}.section-title{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:800;margin:2px 0 12px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:flex;flex-direction:column;gap:5px;min-width:0}.field.full{grid-column:1/-1}label{font-size:12px;color:#4c586c;font-weight:650}input,textarea,select{width:100%;border:1px solid #cfd7e3;border-radius:9px;padding:10px 11px;font:inherit;color:var(--ink);background:white;min-width:0}input:focus,textarea:focus,select:focus{outline:2px solid #c8d6ff;border-color:#7796f5}textarea{min-height:68px;resize:vertical}.divider{height:1px;background:var(--line);margin:18px 0}
+button{border:0;border-radius:9px;padding:10px 13px;font:inherit;font-weight:700;cursor:pointer;background:var(--blue);color:white}button:hover{filter:brightness(.96)}button.secondary{background:#edf1f7;color:#26334a}button.outline{background:white;color:var(--blue);border:1px solid #c8d5f7}button.danger{background:#fff0ef;color:var(--red)}button.small{padding:6px 9px;font-size:12px}.muted{color:var(--muted)}.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.between{display:flex;justify-content:space-between;align-items:center;gap:10px}.status{font-size:12px;border-radius:999px;padding:5px 9px;background:#eef2f7;color:#536176}.status.ok{background:#e7f7ef;color:var(--green)}.status.warn{background:#fff3d8;color:#865600}
+.items-wrap{overflow:auto;border:1px solid var(--line);border-radius:10px}table{border-collapse:collapse;width:100%;min-width:680px}th,td{padding:8px;border-bottom:1px solid var(--line);text-align:left;font-size:12px}th{background:#f7f9fc;color:#566176;font-size:11px;text-transform:uppercase;letter-spacing:.04em}td input{padding:8px 7px;border-radius:7px;font-size:12px}td.num,th.num{text-align:right}.item-desc{min-width:280px;width:100%}.totals{margin:14px 0 0 auto;max-width:330px}.total-line{display:flex;justify-content:space-between;gap:16px;padding:5px 0;color:#4d596c}.total-line strong{color:var(--ink)}.grand{font-size:19px;border-top:1px solid var(--line);margin-top:6px;padding-top:12px;font-weight:850}.words{background:#f4f7ff;border:1px solid #dce5ff;border-radius:10px;padding:11px;margin-top:12px}.words small{display:block;color:#62708b;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px}.words strong{font-size:13px}
+.preview-panel{position:sticky;top:12px}.preview-tools{display:flex;gap:7px;flex-wrap:wrap}.paper-stage{padding:18px;background:#edf1f7;max-height:calc(100vh - 145px);overflow:auto}.invoice-paper{background:white;color:#192338;width:100%;max-width:800px;margin:0 auto;padding:34px;min-height:540px;box-shadow:0 4px 20px #1b2d4a14;font-size:12px}.inv-top{display:flex;justify-content:space-between;gap:24px;border-bottom:2px solid #233d7b;padding-bottom:18px}.company-name{font-size:23px;font-weight:850;letter-spacing:-.03em;overflow-wrap:anywhere}.company-unit{display:block;font-size:8px;font-weight:500;font-style:italic;letter-spacing:0;line-height:1.2;margin-top:2px}.company-meta{color:#59667a;white-space:pre-line;margin-top:6px}.inv-title{text-align:right;min-width:130px}.inv-title h2{font-size:27px;margin:0;color:#234bc1;letter-spacing:.06em}.inv-title p{margin:5px 0;color:#5e6a7e}.meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;padding:20px 0}.meta-label{font-size:9px;text-transform:uppercase;letter-spacing:.09em;color:#7b8798;font-weight:800;margin-bottom:5px}.meta-value{white-space:pre-line;overflow-wrap:anywhere}.preview-table{min-width:0;width:100%;margin-top:6px}.preview-table th{background:#f0f4ff;color:#34466e}.preview-table th,.preview-table td{font-size:11px;padding:10px 7px}.preview-table td{border-bottom:1px solid #e4e8f0}.preview-table .num{text-align:right}.preview-bottom{display:grid;grid-template-columns:1fr 230px;gap:24px;margin-top:18px}.preview-words{color:#46536a;font-size:10px;line-height:1.5}.preview-words b{display:block;color:#26354e;font-size:11px;margin-bottom:5px}.preview-totals .total-line{font-size:11px;padding:4px 0}.preview-totals .grand{font-size:17px;color:#234bc1}.notes-area{margin-top:24px;border-top:1px solid #e0e5ed;padding-top:12px;display:flex;justify-content:space-between;gap:24px}.signature{margin-top:36px;border-top:1px solid #8e99aa;padding-top:6px;width:160px;text-align:center;color:#59667a;font-size:10px}.history-list{display:flex;flex-direction:column;gap:8px}.history-item{border:1px solid var(--line);border-radius:10px;padding:11px;display:flex;justify-content:space-between;gap:10px;align-items:center}.history-item strong{display:block}.history-item small{color:var(--muted)}.history-actions{display:flex;gap:5px;flex-wrap:wrap}.notice{padding:11px 12px;border-radius:10px;background:#fff8e7;border:1px solid #f2dfad;color:#74531a;font-size:12px;line-height:1.5}.sql{white-space:pre-wrap;background:#101a30;color:#dce7ff;border-radius:9px;padding:12px;font:11px/1.5 ui-monospace,monospace;overflow-wrap:anywhere}.hidden{display:none!important}
+@media(max-width:980px){.layout{grid-template-columns:1fr}.preview-panel{position:static}.paper-stage{max-height:none}.invoice-paper{padding:22px}}
+@media(max-width:540px){header{padding:14px}.layout{padding:0 10px;margin:12px auto}.grid{grid-template-columns:1fr}.field.full{grid-column:auto}.invoice-paper{padding:15px}.company-name{font-size:18px}.inv-title h2{font-size:22px}.meta-grid{gap:10px}.preview-bottom{grid-template-columns:1fr}.preview-totals{max-width:280px;margin-left:auto}}
+@page{size:A4;margin:10mm}
+@media print{
+ body{background:white!important;font-size:11px}.no-print,header,.layout>.editor-panel,.history-panel,.settings-panel{display:none!important}.layout{display:block;margin:0;padding:0;max-width:none}.preview-panel{position:static;border:0;box-shadow:none;border-radius:0}.preview-panel>.panel-head{display:none}.paper-stage{padding:0;background:white;max-height:none;overflow:visible}.invoice-paper{box-shadow:none;max-width:none;width:100%;min-height:0;padding:0;margin:0;font-size:11px}.company-name{font-size:23px}.inv-title h2{font-size:26px}.preview-table th,.preview-table td{font-size:10px;padding:7px 6px}.preview-bottom{grid-template-columns:1fr 220px;gap:20px}.preview-totals .grand{font-size:16px}
+}
+
+
+/* Clearer invoice ruling and dual signature area */
+.preview-table{border-collapse:collapse;border:1px solid #b8c5d8;border-radius:0;overflow:visible}
+.preview-table th,.preview-table td{border:1px solid #cbd5e1}
+.preview-table th{border-color:#b8c7df}
+.preview-table tbody tr:last-child td{border-bottom:1px solid #cbd5e1}
+.signature-group{display:flex;gap:22px;align-items:flex-end;justify-content:flex-end;flex-wrap:wrap}
+.signature{margin-top:42px;border-top:1.5px solid #64748b;padding-top:7px;width:145px;text-align:center;color:#35445c;font-size:10px;font-weight:650;min-height:24px}
+@media(max-width:540px){.signature-group{gap:16px}.signature{width:125px}}
+@media print{.preview-table th,.preview-table td{border:1px solid #aeb9c8!important}.signature{border-top:1.5px solid #526174!important}}
+
+/* Modern LRM Hospital invoice styling */
+:root{--ink:#14213d;--muted:#68758b;--line:#dbe3ef;--bg:#f3f6fb;--blue:#1d4ed8;--blue2:#eaf1ff;--green:#087f5b;--card:#fff}
+body{background:radial-gradient(circle at 10% 0%,#e5edff 0,transparent 34%),#f4f7fb}
+header{background:linear-gradient(120deg,#101a30 0%,#173a75 100%);box-shadow:0 8px 24px #10264a1c}
+.logo{background:linear-gradient(135deg,#4f7cff,#2449c7);box-shadow:0 5px 14px #315fe344;font-size:13px;letter-spacing:-.04em}
+.panel{border-radius:18px;box-shadow:0 10px 30px #19365c0b;border-color:#e1e7f0}
+.panel-head{background:linear-gradient(180deg,#fff,#fbfcff)}
+input,textarea,select{border-color:#d5deeb;border-radius:10px;transition:border-color .15s,box-shadow .15s}
+input:focus,textarea:focus,select:focus{box-shadow:0 0 0 3px #c8d6ff66}
+button{background:linear-gradient(135deg,#2d5ee8,#2048bd);box-shadow:0 3px 8px #234bc11a}
+button.secondary{box-shadow:none}
+.paper-stage{background:linear-gradient(135deg,#edf2fa,#e6ecf5)}
+.invoice-paper{position:relative;border:1px solid #e4e9f2;border-radius:5px;overflow:hidden;box-shadow:0 12px 34px #172b4d14}
+.invoice-paper:before{content:"";display:block;position:absolute;left:0;top:0;right:0;height:7px;background:linear-gradient(90deg,#173a75,#4777f5,#83b5ff)}
+.inv-top{border-bottom:1px solid #d8e2f2;padding-top:10px;padding-bottom:22px}
+.company-name{color:#152d58;font-size:25px;letter-spacing:-.045em}
+.company-meta{font-size:11px;line-height:1.65;color:#65728a}
+.inv-title h2{font-size:25px;letter-spacing:.12em;color:#1d4ed8}
+.inv-title p{font-size:11px}
+.meta-grid{padding:22px 0}
+.meta-grid>div:first-child{background:#f5f8ff;border:1px solid #e1e9fb;border-radius:12px;padding:14px 16px}
+.paid-to-label{color:#1d4ed8;font-size:10px;letter-spacing:.16em}
+.preview-table{border:1px solid #e0e7f1;border-radius:8px;overflow:hidden}
+.preview-table th{background:#edf3ff;color:#28416e}
+.preview-table th,.preview-table td{padding:11px 8px}
+.preview-bottom{margin-top:22px}
+.preview-words{background:#f7f9fd;border:1px solid #e7edf5;border-radius:10px;padding:12px}
+.preview-totals{background:#fbfcff;border:1px solid #e5eaf3;border-radius:12px;padding:12px 14px}
+.preview-totals .grand{border-top:1px solid #dbe4f2;color:#1d4ed8;padding-top:12px}
+.notes-area{border-top:1px solid #e0e7f1;padding-top:16px}
+.signature{border-color:#aab7ca;color:#56657d}
+.company-brand-row{display:flex;align-items:center;gap:14px;min-width:0}.invoice-logo{width:76px;height:76px;object-fit:contain;flex:0 0 auto;border:1px solid #e1e7f0;border-radius:10px;padding:4px;background:#fff}.company-brand-copy{min-width:0}.logo-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.logo-help{font-size:11px;color:#68758b;line-height:1.4}
+@media(max-width:540px){.invoice-logo{width:58px;height:58px}.company-brand-row{gap:10px}}
+@media print{.invoice-logo{border:0;padding:0;border-radius:0}}
+@media print{body{background:#fff!important}.invoice-paper{border:0;border-radius:0}.invoice-paper:before{height:5px}.meta-grid>div:first-child,.preview-words,.preview-totals{background:#fff!important}}
+
+/* Modern invoice editor refinements */
+body{background:radial-gradient(ellipse at top left,#e7efff 0,transparent 38%),var(--bg)}
+header{background:linear-gradient(115deg,#101a30,#1a3260 72%,#234c86);box-shadow:0 8px 28px #10264a20}
+.logo{background:linear-gradient(135deg,#4778ff,#19a6a6);box-shadow:0 5px 14px #244ed444}
+.panel{border-color:#e0e7f1;border-radius:18px;box-shadow:0 10px 32px #19365c0b}
+.panel-head{background:linear-gradient(180deg,#fff,#fbfcff)}
+.section-title{color:#3156a3;font-size:10px;letter-spacing:.13em}
+input,textarea,select{border-color:#d2dceb;border-radius:11px;transition:border-color .15s,box-shadow .15s}
+input:focus,textarea:focus,select:focus{outline:0;border-color:#6487ef;box-shadow:0 0 0 3px #dfe8ff}
+button{border-radius:10px;background:linear-gradient(135deg,#285ce0,#244bb9);box-shadow:0 3px 8px #244bb91a}
+button.secondary,button.outline{box-shadow:none}
+.items-wrap{border-radius:12px}
+.preview-panel{box-shadow:0 14px 36px #19365c12}
+.paper-stage{background:linear-gradient(135deg,#e8eef8,#f3f6fb)}
+.invoice-paper{border-radius:5px;box-shadow:0 12px 32px #142b4b16}
+@media print{body{background:white!important}.invoice-paper{border-radius:0}}
+</style>
+<style>
+/* Black, clear invoice ruling and hospital-name underline */
+.company-name{display:inline-block;border-bottom:2px solid #000!important;padding-bottom:5px;color:#000!important}
+.inv-top{border-bottom:2px solid #000!important}
+.invoice-paper:before{background:#000!important;height:4px!important}
+.preview-table{border:1px solid #000!important;border-radius:0!important}
+.preview-table th,.preview-table td{border:1px solid #000!important}
+.preview-table thead,.preview-table tbody,.preview-table tr{border-color:#000!important}
+.total-line,.grand,.words,.preview-words,.preview-totals{border-color:#000!important}
+.preview-table th{background:#f2f2f2!important;color:#000!important}
+.notes-area{border-top:1px solid #000!important}
+.signature{border-top:1.5px solid #000!important;color:#000!important}
+.company-name{color:#000!important}
+.invoice-paper{border-color:#000!important}
+.meta-label,.meta-value,.company-meta,.inv-title h2,.inv-title p,.preview-words,.preview-words b,.preview-totals .grand{color:#000!important}
+@media print{
+ .company-name{border-bottom:2px solid #000!important}
+ .inv-top,.preview-table,.preview-table th,.preview-table td,.preview-table tr,.notes-area,.signature,.invoice-paper,.preview-words,.preview-totals,.grand{border-color:#000!important}
+ .invoice-paper:before{background:#000!important}
+}
+@media print{.invoice-paper:before{background:#000!important}.company-name{border-bottom:2px solid #000!important}.preview-table th{background:#eee!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}.signature{min-height:25px}}
+</style>
+
+<style>
+/* Compact description column and tighter black table ruling */
+.preview-table{margin-top:4px!important;border-collapse:collapse!important;border:1px solid #000!important}
+.preview-table th,.preview-table td{padding:5px 5px!important;line-height:1.25!important;border:1px solid #000!important;vertical-align:middle!important}
+.preview-table th{font-size:10px!important;letter-spacing:0!important}
+.preview-table td{font-size:10px!important}
+.preview-table td:nth-child(2){padding-left:5px!important;padding-right:5px!important;overflow-wrap:anywhere}
+.preview-table tbody tr{height:auto!important}
+@media print{.preview-table th,.preview-table td{padding:4px 4px!important;line-height:1.2!important;border:1px solid #000!important;font-size:9.5px!important}}
+</style>
+
+<style>
+/* Login/logout screen for local demo; not a secure multi-user authentication system */
+#loginGate{position:fixed;inset:0;z-index:99999;background:#f3f6fb;display:flex;align-items:center;justify-content:center;padding:20px;font-family:inherit}
+#loginGate .login-card{width:min(420px,100%);background:#fff;border:1px solid #d5dbe5;border-radius:18px;padding:28px;box-shadow:0 18px 50px #10204018}
+#loginGate h2{margin:0 0 6px;color:#111827}#loginGate p{color:#5b6472;font-size:14px;line-height:1.5}
+#loginGate label{display:block;font-weight:600;font-size:13px;margin:14px 0 6px}
+#loginGate input,#loginGate select{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:9px;font:inherit;box-sizing:border-box;background:white}
+#loginGate button{width:100%;margin-top:18px;padding:12px;border:0;border-radius:9px;background:#123d70;color:white;font-weight:700;cursor:pointer}
+#loginError{color:#b91c1c;min-height:18px;font-size:13px;margin-top:8px}
+#sessionUser{font-size:12px;color:#374151;padding:6px 9px;border:1px solid #cbd5e1;border-radius:8px}
+@media print{#loginGate,#logoutBtn,#sessionUser{display:none!important}}
+
+/* Clear customer and item details in the printable PDF */
+.meta-grid>div:first-child{min-width:0}
+#pCustomerName{font-size:13px;font-weight:800;color:#111!important}
+#pCustomerMeta{font-size:10.5px;line-height:1.5;color:#111!important}
+.preview-table th:nth-child(2),.preview-table td:nth-child(2){min-width:0;overflow-wrap:anywhere;white-space:normal}
+@media print{
+ .preview-table{width:100%!important;table-layout:fixed!important}
+ .preview-table th:nth-child(2),.preview-table td:nth-child(2){width:38%!important;overflow-wrap:anywhere;white-space:normal}
+ .meta-grid{padding:14px 0!important}
+ #pCustomerName{font-size:13px!important;font-weight:800!important}
+ #pCustomerMeta{font-size:10px!important;line-height:1.45!important}
+}
+</style>
+
+<style>
+/* Larger, easier-to-read invoice item columns: Description, Qty, Unit, Rate, Amount */
+.items-wrap table{table-layout:auto;min-width:760px}
+.items-wrap th{font-size:12px!important;letter-spacing:.02em;padding:11px 9px!important}
+.items-wrap td{font-size:14px!important;padding:10px 8px!important}
+.items-wrap td input{font-size:14px!important;padding:11px 9px!important;min-height:42px}
+.items-wrap .item-desc{min-width:320px!important}
+.preview-table{table-layout:fixed!important;width:100%!important}
+.preview-table th,.preview-table td{font-size:12px!important;line-height:1.4!important;padding:9px 7px!important}
+.preview-table th{font-size:12px!important;font-weight:800!important;letter-spacing:.01em!important;white-space:normal}
+.preview-table th:nth-child(1),.preview-table td:nth-child(1){width:6%!important}
+.preview-table th:nth-child(2),.preview-table td:nth-child(2){width:34%!important;font-size:12.5px!important;overflow-wrap:anywhere;white-space:normal}
+.preview-table th:nth-child(3),.preview-table td:nth-child(3){width:9%!important;text-align:right}
+.preview-table th:nth-child(4),.preview-table td:nth-child(4){width:18%!important}
+.preview-table th:nth-child(5),.preview-table td:nth-child(5){width:12%!important;text-align:right}
+.preview-table th:nth-child(6),.preview-table td:nth-child(6){width:21%!important;text-align:right}
+@media print{
+ .preview-table th,.preview-table td{font-size:11px!important;line-height:1.35!important;padding:7px 5px!important}
+ .preview-table th{font-size:11px!important;font-weight:800!important}
+ .preview-table th:nth-child(2),.preview-table td:nth-child(2){font-size:11px!important;width:34%!important}
+ .preview-table th:nth-child(3),.preview-table td:nth-child(3){width:9%!important}
+ .preview-table th:nth-child(4),.preview-table td:nth-child(4){width:18%!important}
+ .preview-table th:nth-child(5),.preview-table td:nth-child(5){width:12%!important}
+ .preview-table th:nth-child(6),.preview-table td:nth-child(6){width:21%!important}
+}
+@media(max-width:540px){.items-wrap table{min-width:760px}.preview-table th,.preview-table td{font-size:10.5px!important;padding:6px 3px!important}}
+</style>
+
+</head>
+<body>
+<div id="loginGate" role="dialog" aria-label="Cashier login">
+ <div class="login-card">
+  <div style="font-weight:800;letter-spacing:1px;color:#123d70;font-size:13px;margin-bottom:10px">LRM HOSPITAL</div>
+  <h2>Cashier Login</h2><p>Enter your User ID and password to open the invoice maker.</p>
+  <form id="loginForm">
+   <label for="loginUser">User ID</label>
+   <select id="loginUser"><option value="admin">ADMIN</option><option value="cashier01">CASHIER01</option><option value="cashier02">CASHIER02</option><option value="cashier03">CASHIER03</option><option value="cashier04">CASHIER04</option><option value="cashier05">CASHIER05</option><option value="cashier06">CASHIER06</option></select>
+   <label for="loginPass">Password</label><input id="loginPass" type="password" autocomplete="current-password" required placeholder="Enter password">
+   <button type="submit">Log in</button><div id="loginError" aria-live="polite"></div>
+  </form>
+  <button type="button" id="forgotToggle" style="background:#fff;color:#123d70;border:1px solid #cbd5e1;margin-top:8px">Forgot password?</button>
+  <form id="recoverForm" style="display:none;margin-top:14px;border-top:1px solid #e2e8f0;padding-top:12px">
+   <h3 style="margin:0 0 6px;font-size:16px">Reset password</h3>
+   <p style="margin:0;font-size:12px">Choose your User ID, enter the recovery code, then set a new password.</p>
+   <label for="recoverUser">User ID</label><select id="recoverUser"><option value="admin">ADMIN</option><option value="cashier01">CASHIER01</option><option value="cashier02">CASHIER02</option><option value="cashier03">CASHIER03</option><option value="cashier04">CASHIER04</option><option value="cashier05">CASHIER05</option><option value="cashier06">CASHIER06</option></select>
+   <label for="recoverCode">Recovery code</label><input id="recoverCode" type="password" required placeholder="Enter recovery code" autocomplete="off">
+   <label for="newPass">New password</label><input id="newPass" type="password" minlength="8" required placeholder="At least 8 characters" autocomplete="new-password">
+   <button type="submit">Reset password</button><div id="recoverMessage" aria-live="polite" style="font-size:13px;margin-top:8px"></div>
+  </form>
+  <p style="font-size:12px;margin-bottom:0"><b>Demo login:</b> ADMIN / LRMAdmin2026<br>CASHIER01–06 / Cashier@123</p>
+ </div>
+</div>
+<header>
+ <div class="brand"><div class="logo">LRM</div><div><h1>LRM HOSPITAL</h1><p>Cashier Billing · Create, print and track invoices</p></div></div>
+ <div class="top-actions no-print"><span id="sessionUser">Not logged in</span><button class="secondary" id="newBtn">＋ New invoice</button><button class="outline" id="historyTopBtn">Invoice history</button><button class="outline" id="logoutBtn" type="button">Log out</button></div>
+</header>
+<div class="layout">
+ <section class="panel editor-panel">
+  <div class="panel-head"><h2>Invoice details</h2><span class="status" id="saveStatus">Not saved</span></div>
+  <div class="panel-body">
+   <div class="section-title">Customer details</div>
+   <div class="grid">
+    <div class="field"><label>Customer / client name</label><input id="customerName" placeholder="Customer name"></div>
+    <div class="field"><label>Customer phone</label><input id="customerPhone" type="tel" inputmode="numeric" maxlength="10" pattern="[0-9]{10}" placeholder="10-digit phone number" title="Enter exactly 10 digits" autocomplete="tel"></div>
+    <div class="field full"><label>Customer address</label><textarea id="customerAddress" placeholder="Customer billing address"></textarea></div>
+   </div>
+   <div class="divider"></div>
+   <div class="grid">
+    <div class="field"><label>Document type</label><select id="documentType"><option value="INVOICE">Invoice</option><option value="RECEIPT">Receipt</option></select></div>
+    <div class="field"><label>Customer label on document</label><select id="customerLabel"><option value="PAID TO">Paid To</option><option value="RECEIVED FROM">Received From</option><option value="BILL TO">Bill To</option></select></div>
+    <div class="field"><label>Invoice / Receipt number</label><input id="invoiceNo"></div>
+    <div class="field"><label>Invoice date</label><input id="invoiceDate" type="date"></div>
+   </div>
+   <div class="divider"></div>
+   <div class="items-wrap" style="margin-top:12px"><table><thead><tr><th>Description</th><th style="width:58px">Qty</th><th style="width:120px">Unit</th><th style="width:80px">Rate (₹)</th><th class="num" style="width:96px">Amount</th><th></th></tr></thead><tbody id="itemsBody"></tbody></table></div>
+   <div class="row" style="margin-top:10px;justify-content:flex-start;gap:8px;flex-wrap:wrap"><button class="small" id="addItemBtn" type="button">＋ Add item</button></div>
+   <div class="grid" style="margin-top:12px"><div class="field"><label>Amount paid (₹)</label><input id="amountPaid" type="number" min="0" step=".01" value="0"></div></div>
+   <div class="section-title">Your business</div>
+   <div class="grid">
+    <div class="field full"><label>Business / company name</label><select id="businessName"><option value="LRM HOSPITAL" selected>LRM HOSPITAL</option><option value="LRM HOSPITAL (Unit of LRM Hospital)">LRM HOSPITAL (Unit of LRM Hospital)</option></select></div>
+    <div class="field full"><label>Business address</label><select id="businessAddress"><option value="Ramhlun Venglai, Aizawl, Mizoram" selected>Ramhlun Venglai, Aizawl, Mizoram</option><option value="Bro. Godfrey Tower, College Veng, Aizawl, Mizoram">Bro. Godfrey Tower, College Veng, Aizawl, Mizoram</option></select></div>
+    <div class="field full"><label>Hospital logo (default logo included)</label><div class="logo-controls"><input type="file" id="logoInput" accept="image/png,image/jpeg,image/webp,image/svg+xml" style="flex:1"><button type="button" class="small secondary" id="removeLogoBtn">Use default logo</button></div><div class="logo-help">A default LRM Hospital logo is built in and prints automatically. Upload your official logo to replace it.</div></div>
+    <div class="field"><label>Phone</label><input id="businessPhone" type="tel" value="8413028542" placeholder="Hospital phone"></div>
+    <div class="field"><label>Email</label><input id="businessEmail" placeholder="name@example.com"></div>
+   </div>
+   <div class="divider"></div>
+   <div class="divider"></div>
+   <div class="grid" style="margin-top:14px">
+    <div class="field full"><label>Notes / terms (optional)</label><textarea id="notes" placeholder="Thank you for your service.">Thank you for your service.</textarea></div>
+   </div>
+   <div class="row" style="margin-top:16px"><button id="saveBtn">Save invoice</button><button class="secondary" id="resetBtn">Clear form</button></div>
+   <p class="muted" style="font-size:11px;margin-bottom:0">Invoice data is stored in this browser by default. Configure Supabase in Settings for online database sync.</p>
+  </div>
+ </section>
+ <section class="panel preview-panel">
+  <div class="panel-head"><h2>Live invoice preview</h2><div class="preview-tools no-print"><select id="paperSize" aria-label="Paper size" style="width:auto;padding:7px"><option value="A4">A4 paper</option><option value="A5">A5 paper</option></select><button class="small outline" id="downloadPdfBtn">Download PDF</button><button class="small" id="printBtn">Print</button></div></div>
+  <div class="paper-stage"><article class="invoice-paper" id="invoicePaper">
+   <div class="inv-top"><div class="company-brand-row"><img id="pLogo" class="invoice-logo hidden" alt="Hospital logo"><div class="company-brand-copy"><div class="company-name" id="pBusinessName">Your Business Name</div><div class="company-meta" id="pBusinessMeta">Business address</div></div></div><div class="inv-title"><h2>INVOICE</h2><p><b>No.</b> <span id="pInvoiceNo">INV-0001</span></p><p><b>Date:</b> <span id="pInvoiceDate"></span></p></div></div>
+   <div class="meta-grid"><div><div class="meta-label paid-to-label">PAID TO</div><div class="meta-value" id="pCustomerName"><b>Customer name</b></div><div class="meta-value" id="pCustomerMeta" style="margin-top:5px;color:#5e6b80"></div></div><div></div></div>
+   <table class="preview-table"><thead><tr><th style="width:30px">#</th><th>Description</th><th class="num" style="width:42px">Qty</th><th style="width:62px">Unit</th><th class="num" style="width:75px">Rate</th><th class="num" style="width:85px">Amount</th></tr></thead><tbody id="pItems"></tbody></table>
+   <div class="preview-bottom"><div></div><div class="preview-totals"><div class="total-line"><span>Subtotal</span><strong id="pSubtotal">₹0.00</strong></div><div class="total-line grand"><span>Total</span><strong id="pTotal">₹0.00</strong></div><div class="total-line"><span>Paid</span><strong id="pPaid">₹0.00</strong></div><div class="preview-words" style="margin-top:8px"><b>Amount in words</b><span id="pWords">Rupees Zero Only</span></div></div></div>
+   <div class="notes-area"><div style="flex:1"><div class="meta-label">Notes / terms</div><div class="meta-value" id="pNotes">Thank you for your service.</div></div><div class="signature-group"><div class="signature">Authorised Signature</div><div class="signature">Receiver Signature</div></div></div>
+   <div style="margin-top:22px;text-align:center;color:#8993a3;font-size:9px">This is a computer-generated invoice.</div>
+  </article></div>
+ </section>
+ <section class="panel history-panel" id="historyPanel">
+  <div class="panel-head"><h2>Invoice history</h2><div class="row"><span class="status" id="historyCount">0 invoices</span><button class="small secondary" id="refreshHistoryBtn">Refresh</button></div></div>
+  <div class="panel-body">
+   <div class="row" style="margin-bottom:10px;flex-wrap:wrap"><input id="historySearch" placeholder="Search invoice no. or customer..." style="flex:1;min-width:220px"><button class="outline small" id="exportJsonBtn">Export backup</button><label class="outline small" style="cursor:pointer;border-radius:9px;padding:6px 9px"><input type="file" id="importJsonInput" accept="application/json" style="display:none">Import backup</label></div>
+   <div class="row" style="margin-bottom:12px;flex-wrap:wrap;align-items:end"><div class="field" style="flex:1;min-width:145px"><label for="historyFromDate">From date</label><input type="date" id="historyFromDate"></div><div class="field" style="flex:1;min-width:145px"><label for="historyToDate">To date</label><input type="date" id="historyToDate"></div><div class="field" style="flex:1;min-width:160px"><label for="historySort">Order</label><select id="historySort"><option value="newest">Newest date first</option><option value="oldest">Oldest date first</option><option value="amountHigh">Highest amount first</option><option value="amountLow">Lowest amount first</option></select></div><button class="outline small" id="clearHistoryFiltersBtn">Clear filters</button></div>
+   <div class="history-list" id="historyList"><p class="muted">No invoices saved yet.</p></div>
+  </div>
+ </section>
+ <section class="panel settings-panel" id="settingsPanel">
+  <div class="panel-head"><h2>Online database settings</h2><span class="status warn" id="dbStatus">Local only</span></div>
+  <div class="panel-body">
+   <div class="notice">Online sync needs your own Supabase project. This file cannot create a database account or securely host patient/customer records by itself. For real business use, enable Row Level Security and authentication; do not use a service-role key here.</div>
+   <div class="grid" style="margin-top:14px">
+    <div class="field full"><label>Supabase Project URL</label><input id="supabaseUrl" placeholder="https://your-project.supabase.co"></div>
+    <div class="field full"><label>Supabase anon / publishable key</label><input id="supabaseKey" placeholder="Public anon key (never service_role)"></div>
+    <div class="field full"><label>Optional access token (advanced)</label><input id="supabaseToken" placeholder="Leave blank unless using your own authenticated setup"></div>
+   </div>
+   <div class="row" style="margin-top:12px"><button id="connectDbBtn">Save settings & test</button><button class="secondary" id="disconnectDbBtn">Use local only</button></div>
+   <details style="margin-top:14px"><summary style="cursor:pointer;font-weight:750">Database SQL setup instructions</summary><p class="muted">Create a Supabase project, open SQL Editor, then run the SQL below. This simple starter table uses RLS. The example policy allows anon access for quick testing and is NOT suitable for real customer data; replace it with authenticated-user policies before production.</p><div class="sql" id="sqlText">create table if not exists public.invoices (
+  id text primary key,
+  invoice_no text not null,
+  invoice_date date,
+  payload jsonb not null default '{}'::jsonb,
+  updated_at timestamptz not null default now()
+);
+alter table public.invoices enable row level security;
+-- DEMO ONLY: open anon policies for initial test; not safe for real data.
+create policy "demo anon select" on public.invoices for select to anon using (true);
+create policy "demo anon insert" on public.invoices for insert to anon with check (true);
+create policy "demo anon update" on public.invoices for update to anon using (true) with check (true);
+create policy "demo anon delete" on public.invoices for delete to anon using (true);</div><button class="small secondary" id="copySqlBtn" style="margin-top:8px">Copy SQL</button></details>
+   <p class="muted" style="font-size:11px">Local browser history is kept as a fallback. Configure the same project URL/key on each device to use the same online invoice table. Use “Download PDF / Print”, then choose “Save as PDF” in the print window. The PDF includes customer name, invoice date and item descriptions.</p>
+  </div>
+ </section>
+</div>
+
+<div id="printSizeModal" class="print-size-backdrop no-print" role="dialog" aria-modal="true" aria-labelledby="printSizeTitle" style="display:none">
+ <div class="print-size-card"><div class="print-size-mark">LRM</div><p class="print-size-eyebrow">INVOICE SAVED SUCCESSFULLY</p><h2 id="printSizeTitle">Choose your print format</h2><p class="print-size-subtitle">Select the paper size for a clean, print-ready hospital invoice.</p>
+  <div class="print-size-options"><button type="button" class="print-size-option" id="printA4Btn"><span class="paper-icon paper-a4-icon"></span><strong>A4</strong><small>210 × 297 mm · Full page</small><span class="print-size-cta">Print A4 invoice →</span></button><button type="button" class="print-size-option" id="printA5Btn"><span class="paper-icon paper-a5-icon"></span><strong>A5</strong><small>148 × 210 mm · Compact</small><span class="print-size-cta">Print A5 invoice →</span></button></div>
+  <button type="button" class="print-size-later" id="closePrintSizeModal">Not now — continue editing</button>
+ </div>
+</div>
+<style>
+.print-size-backdrop{position:fixed;inset:0;z-index:99990;background:rgba(9,20,42,.62);backdrop-filter:blur(7px);display:flex;align-items:center;justify-content:center;padding:20px}
+.print-size-card{width:min(560px,100%);background:#fff;border:1px solid #e2e8f0;border-radius:24px;padding:30px;box-shadow:0 28px 90px #07152e55;text-align:center;animation:modalIn .2s ease-out}
+.print-size-mark{margin:0 auto 14px;width:48px;height:48px;border-radius:15px;background:linear-gradient(135deg,#173a75,#4777f5);display:grid;place-items:center;color:white;font-weight:900;letter-spacing:-.05em}
+.print-size-eyebrow{font-size:10px;letter-spacing:.17em;font-weight:850;color:#2457d6;margin:0 0 8px}.print-size-card h2{font-size:25px;letter-spacing:-.04em;margin:0;color:#14213d}.print-size-subtitle{font-size:13px;color:#68758b;margin:9px 0 24px}
+.print-size-options{display:grid;grid-template-columns:1fr 1fr;gap:13px}.print-size-option{display:flex;align-items:center;flex-direction:column;gap:8px;padding:20px 12px 17px;background:#f8faff;color:#14213d;border:1px solid #dbe5f5;border-radius:16px;box-shadow:none;transition:transform .15s,border-color .15s,background .15s}.print-size-option:hover{transform:translateY(-2px);border-color:#6487ef;background:#f1f5ff}.print-size-option strong{font-size:23px;letter-spacing:-.04em}.print-size-option small{font-size:11px;color:#68758b;font-weight:500}.print-size-cta{font-size:12px;color:#2457d6;font-weight:800;margin-top:6px}.paper-icon{display:block;position:relative;background:white;border:1.5px solid #8ca2c5;border-radius:4px;box-shadow:0 3px 7px #19365c14}.paper-a4-icon{width:35px;height:47px}.paper-a5-icon{width:31px;height:40px;margin-top:7px;margin-bottom:0}.paper-icon:after{content:"";position:absolute;left:7px;right:7px;top:12px;height:2px;background:#b7c7e1;box-shadow:0 6px #d0daea,0 12px #d0daea}.print-size-later{margin-top:19px;background:transparent;color:#68758b;box-shadow:none;font-size:12px}.print-size-later:hover{color:#14213d;background:#f3f6fb}@keyframes modalIn{from{opacity:0;transform:translateY(8px) scale(.99)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(max-width:480px){.print-size-card{padding:23px 17px;border-radius:20px}.print-size-card h2{font-size:22px}.print-size-options{gap:9px}.print-size-option{padding:16px 7px}}
+@media print{.print-size-backdrop{display:none!important}}
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const LS='invoice_maker_general_v1', DBLS='invoice_maker_supabase_v1', LOGOLS='lrm_invoice_logo_v1';
+const DEFAULT_LOGO='data:image/jpeg;base64,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';
+let items=[], invoices=[], editingId=null, logoDataUrl=localStorage.getItem(LOGOLS)||DEFAULT_LOGO, db={url:'',key:'',token:''};
+const money=n=>new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR'}).format(Number(n)||0);
+const num=v=>Math.max(0,Number(v)||0);
+const today=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;};
+const displayDate=value=>{if(!value)return '—';const m=String(value).match(/^(\d{4})-(\d{2})-(\d{2})$/);return m?`${m[3]}/${m[2]}/${m[1]}`:value;};
+function escapeHtml(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function wordsUnder1000(n){const a=['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'];const b=['','','Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];let s='';if(n>=100){s+=a[Math.floor(n/100)]+' Hundred';n%=100;if(n)s+=' ';}if(n>=20){s+=b[Math.floor(n/10)];if(n%10)s+=' '+a[n%10];}else if(n)s+=a[n];return s;}
+function integerWords(n){if(!n)return 'Zero';let out=[];const parts=[[10000000,'Crore'],[100000,'Lakh'],[1000,'Thousand'],[1,'']];for(const [v,label] of parts){if(n>=v){let q=Math.floor(n/v);n%=v;let txt=q<1000?wordsUnder1000(q):integerWords(q);out.push(txt+(label?' '+label:''));}}return out.join(' ');}
+function amountWords(n){n=Math.round((Number(n)||0)*100)/100;let rupees=Math.floor(n),paise=Math.round((n-rupees)*100);return 'Rupees '+integerWords(rupees)+(paise?' and '+integerWords(paise)+' Paise':'')+' Only';}
+function makeNo(){let p='INV';let year=new Date().getFullYear();let nums=invoices.map(x=>String(x.invoiceNo||'').match(/(\d+)$/)).filter(Boolean).map(x=>+x[1]);let next=Math.max(0,...nums)+1;return `${p}-${year}-${String(next).padStart(4,'0')}`;}
+function getForm(){return {id:editingId||crypto.randomUUID(),documentType:$('documentType').value||'INVOICE',customerLabel:$('customerLabel').value||($('documentType').value==='RECEIPT'?'RECEIVED FROM':'BILL TO'),invoiceNo:$('invoiceNo').value.trim(),invoiceDate:$('invoiceDate').value,businessName:$('businessName').value,businessAddress:$('businessAddress').value,businessPhone:$('businessPhone').value.trim()||'8413028542',businessEmail:$('businessEmail').value,prefix:'INV',customerName:$('customerName').value,customerPhone:$('customerPhone').value,customerAddress:$('customerAddress').value,items:items.map(x=>({...x})),discount:0,taxRate:0,amountPaid:num($('amountPaid').value),paymentMethod:'Cash',notes:$('notes').value,updatedAt:new Date().toISOString()};}
+function calc(inv){let subtotal=(inv.items||[]).reduce((s,x)=>s+num(x.qty)*num(x.rate),0);let discount=Math.min(num(inv.discount),subtotal);let taxable=Math.max(0,subtotal-discount);let tax=taxable*num(inv.taxRate)/100;let total=taxable+tax;return {subtotal,discount,taxable,tax,total,paid:Math.min(num(inv.amountPaid),total),balance:Math.max(0,total-num(inv.amountPaid))};}
+function itemRow(x,i){return `<tr><td><input class="item-desc" type="text" autocomplete="off" data-i="${i}" data-k="description" value="${escapeHtml(x.description)}" placeholder="Product or service"></td><td><input type="number" min="0" step=".01" data-i="${i}" data-k="qty" value="${x.qty??1}" aria-label="Quantity"></td><td><input type="text" autocomplete="off" data-i="${i}" data-k="unit" value="${escapeHtml(x.unit||'')}" placeholder="Unit" aria-label="Unit"></td><td><input type="number" min="0" step=".01" data-i="${i}" data-k="rate" value="${x.rate??0}" aria-label="Rate"></td><td class="num" id="line${i}">${money(num(x.qty)*num(x.rate))}</td><td><button class="danger small remove-item" data-i="${i}" aria-label="Remove item">×</button></td></tr>`;}
+function renderItems(){ $('itemsBody').innerHTML=items.map(itemRow).join('');}
+function val(id){return $(id).value;}
+function updatePreview(){
+ const inv=getForm(), c=calc(inv);
+ if((inv.businessName||'').trim()==='LRM HOSPITAL (Unit of LRM Hospital)') $('pBusinessName').innerHTML='LRM HOSPITAL<span class="company-unit">(Unit of LRM Hospital)</span>'; else $('pBusinessName').textContent=inv.businessName||'Your Business Name';
+ const logo=$('pLogo');logo.src=logoDataUrl||DEFAULT_LOGO;logo.classList.remove('hidden');
+ $('pBusinessMeta').textContent=[inv.businessAddress,inv.businessPhone?`Phone: ${inv.businessPhone}`:'',inv.businessEmail].filter(Boolean).join('\n')||'Business address';
+ $('pInvoiceNo').textContent=inv.invoiceNo||'—';$('pInvoiceDate').textContent=displayDate(inv.invoiceDate);document.querySelector('.inv-title h2').textContent=inv.documentType==='RECEIPT'?'RECEIPT':'INVOICE';document.querySelector('.inv-title p b').textContent=inv.documentType==='RECEIPT'?'Receipt No.':'No.';document.querySelector('.meta-label.paid-to-label').textContent=inv.customerLabel||(inv.documentType==='RECEIPT'?'RECEIVED FROM':'BILL TO');
+ $('pCustomerName').innerHTML='<b>'+escapeHtml(inv.customerName||'Customer name')+'</b>';
+ $('pCustomerMeta').textContent=[inv.customerAddress,inv.customerPhone?`Phone: ${inv.customerPhone}`:''].filter(Boolean).join('\n');
+ $('pItems').innerHTML=(inv.items.length?inv.items:[{description:'No items added',qty:0,unit:'',rate:0}]).map((x,i)=>`<tr><td>${i+1}</td><td>${escapeHtml(x.description||'—')}</td><td class="num">${num(x.qty)}</td><td>${escapeHtml(x.unit||'')}</td><td class="num">${money(x.rate)}</td><td class="num">${money(num(x.qty)*num(x.rate))}</td></tr>`).join('');
+ $('pSubtotal').textContent=money(c.subtotal);$('pTotal').textContent=money(c.total);$('pPaid').textContent=money(c.paid);$('pWords').textContent=amountWords(c.total);$('pNotes').textContent=inv.notes||'Thank you for your service.';
+ document.body.classList.toggle('paper-a5',val('paperSize')==='A5');
+}
+function bindForm(){document.querySelectorAll('.editor-panel input,.editor-panel textarea,.editor-panel select').forEach(el=>{el.addEventListener('input',()=>{if(el.id==='customerPhone')el.value=el.value.replace(/\D/g,'').slice(0,10);updatePreview();});el.addEventListener('change',updatePreview);});}
+function persistLocal(){localStorage.setItem(LS,JSON.stringify(invoices));}
+function loadLocal(){try{invoices=JSON.parse(localStorage.getItem(LS)||'[]');if(!Array.isArray(invoices))invoices=[];}catch{invoices=[];}}
+async function dbRequest(path,method='GET',body){if(!db.url||!db.key)throw new Error('Supabase is not configured');let headers={'apikey':db.key,'Authorization':'Bearer '+(db.token||db.key),'Content-Type':'application/json'};if(method==='POST')headers['Prefer']='resolution=merge-duplicates,return=minimal';if(method==='PATCH')headers['Prefer']='return=minimal';let r=await fetch(db.url.replace(/\/$/,'')+'/rest/v1/'+path,{method,headers,body:body?JSON.stringify(body):undefined});if(!r.ok)throw new Error((await r.text()).slice(0,300)||'Database request failed');return r.status===204?null:r.json().catch(()=>null);}
+function saveDbSettings(){db={url:$('supabaseUrl').value.trim(),key:$('supabaseKey').value.trim(),token:$('supabaseToken').value.trim()};localStorage.setItem(DBLS,JSON.stringify(db));}
+async function testDb(){try{await dbRequest('invoices?select=id&limit=1');$('dbStatus').textContent='Connected';$('dbStatus').className='status ok';return true;}catch(e){$('dbStatus').textContent='Connection failed';$('dbStatus').className='status warn';alert('Could not connect to Supabase: '+e.message+'\nCheck URL, key, table and RLS policies.');return false;}}
+async function saveOnline(inv){const row={id:inv.id,invoice_no:inv.invoiceNo,invoice_date:inv.invoiceDate||null,payload:inv,updated_at:new Date().toISOString()};await dbRequest('invoices?on_conflict=id','POST',[row]);}
+async function fetchOnline(){const rows=await dbRequest('invoices?select=id,invoice_no,invoice_date,payload,updated_at&order=updated_at.desc');return (rows||[]).map(r=>({...r.payload,id:r.id,invoiceNo:r.invoice_no||r.payload?.invoiceNo,updatedAt:r.updated_at}));}
+async function saveInvoice(){let inv=getForm();if(inv.customerPhone && !/^\d{10}$/.test(inv.customerPhone)){alert('Customer phone must contain exactly 10 digits.');$('customerPhone').focus();return;}if(!inv.customerName.trim()){alert('Please enter customer / client name.');$('customerName').focus();return;}if(!inv.items.length||!inv.items.some(x=>x.description.trim()&&num(x.qty)>0)){alert('Please add at least one item with a description and quantity.');return;}if(!inv.invoiceNo)inv.invoiceNo=makeNo();$('invoiceNo').value=inv.invoiceNo;inv.updatedAt=new Date().toISOString();const idx=invoices.findIndex(x=>x.id===inv.id||x.invoiceNo===inv.invoiceNo);if(idx>=0)invoices[idx]=inv;else invoices.unshift(inv);persistLocal();$('saveStatus').textContent='Saved locally';$('saveStatus').className='status ok';
+ if(db.url&&db.key){try{await saveOnline(inv);$('saveStatus').textContent='Saved online';$('dbStatus').textContent='Synced';$('dbStatus').className='status ok';}catch(e){alert('Saved locally, but online save failed: '+e.message);}}
+ renderHistory();loadInvoice(inv);$('printSizeModal').style.display='flex';$('printA4Btn').focus();}
+function renderHistory(){let q=val('historySearch').toLowerCase();let from=val('historyFromDate');let to=val('historyToDate');let sort=val('historySort')||'newest';let filtered=invoices.filter(x=>{let d=x.invoiceDate||'';return ((x.invoiceNo||'').toLowerCase().includes(q)||(x.customerName||'').toLowerCase().includes(q))&&(!from||d>=from)&&(!to||d<=to);});filtered.sort((a,b)=>{if(sort==='oldest')return (a.invoiceDate||'').localeCompare(b.invoiceDate||'')||(a.invoiceNo||'').localeCompare(b.invoiceNo||'');if(sort==='amountHigh')return calc(b).total-calc(a).total;if(sort==='amountLow')return calc(a).total-calc(b).total;return (b.invoiceDate||'').localeCompare(a.invoiceDate||'')||(b.updatedAt||'').localeCompare(a.updatedAt||'')||(b.invoiceNo||'').localeCompare(a.invoiceNo||'');});$('historyCount').textContent=`${filtered.length} invoice${filtered.length===1?'':'s'}`;$('historyList').innerHTML=filtered.length?filtered.map(x=>{let c=calc(x);return `<div class="history-item"><div><strong>${escapeHtml(x.documentType==='RECEIPT'?'Receipt':'Invoice')} ${escapeHtml(x.invoiceNo||'')} · ${escapeHtml(x.customerName||'No customer')}</strong><small>${escapeHtml(x.invoiceDate||'No date')} · ${money(c.total)}</small></div><div class="history-actions"><button class="small outline load-invoice" data-id="${escapeHtml(x.id)}">Open</button><button class="small secondary print-history" data-id="${escapeHtml(x.id)}">Print</button><button class="small danger delete-history" data-id="${escapeHtml(x.id)}">Delete</button></div></div>`}).join(''):'<p class="muted">No invoices found for these filters.</p>';}
+function loadInvoice(inv){editingId=inv.id;items=(inv.items||[]).map(x=>({...x}));const map={documentType:'documentType',customerLabel:'customerLabel',invoiceNo:'invoiceNo',invoiceDate:'invoiceDate',businessName:'businessName',businessAddress:'businessAddress',businessPhone:'businessPhone',businessEmail:'businessEmail',prefix:null,customerName:'customerName',customerPhone:'customerPhone',customerAddress:'customerAddress',amountPaid:'amountPaid',notes:'notes'};Object.entries(map).forEach(([k,id])=>{if(id)$(id).value=inv[k]??'';});if(!$('businessPhone').value.trim())$('businessPhone').value='8413028542';renderItems();updatePreview();$('saveStatus').textContent='Editing saved invoice';window.scrollTo({top:0,behavior:'smooth'});}
+function resetForm(){editingId=null;items=[{description:'',qty:1,unit:'',rate:0}];$('businessPhone').value='8413028542';$('documentType').value='INVOICE';$('customerLabel').value='BILL TO';['businessEmail','customerName','customerPhone','customerAddress'].forEach(id=>$(id).value='');$('notes').value='Thank you for your service.';$('businessName').value='LRM HOSPITAL';$('businessAddress').value='Ramhlun Venglai, Aizawl, Mizoram';$('invoiceDate').value=today();$('invoiceNo').value=makeNo();$('amountPaid').value='0';$('saveStatus').textContent='Not saved';$('saveStatus').className='status';renderItems();updatePreview();}
+function printInvoice(inv){if(inv)loadInvoice(inv);updatePreview();let style=document.createElement('style');style.id='printOverride';style.textContent='@media print{@page{size:'+val('paperSize')+';margin:8mm}}';document.head.appendChild(style);window.print();setTimeout(()=>style.remove(),1000);}
+async function downloadInvoicePdf(inv){
+ if(inv)loadInvoice(inv);
+ updatePreview();
+ if(!window.jspdf||!window.jspdf.jsPDF){alert('PDF library could not load. Please check your internet connection, then try again. You can also use Print and choose “Save as PDF”.');return;}
+ const data=getForm(), totals=calc(data), {jsPDF}=window.jspdf;
+ const doc=new jsPDF({orientation:'portrait',unit:'mm',format:val('paperSize')==='A5'?'a5':'a4'});
+ const pageW=doc.internal.pageSize.getWidth(), margin=12, right=pageW-margin;
+ let y=15;
+ doc.setFillColor(28,65,132);doc.rect(0,0,pageW,5,'F');
+ doc.setTextColor(24,43,79);doc.setFont('helvetica','bold');doc.setFontSize(val('paperSize')==='A5'?16:19);
+ const business=(data.businessName||'LRM HOSPITAL').trim();if(business==='LRM HOSPITAL (Unit of LRM Hospital)'){doc.text('LRM HOSPITAL',margin,y+2,{maxWidth:pageW*0.58});doc.setFont('helvetica','italic');doc.setFontSize(8);doc.text('(Unit of LRM Hospital)',margin,y+7,{maxWidth:pageW*0.58});doc.setFont('helvetica','normal');}else{doc.text(business,margin,y+2,{maxWidth:pageW*0.58});}
+ doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(85,99,121);
+ const businessMeta=[data.businessAddress,data.businessPhone?'Phone: '+data.businessPhone:'',data.businessEmail||''].filter(Boolean).join(' | ');
+ const metaLines=doc.splitTextToSize(businessMeta,pageW*0.58);doc.text(metaLines,margin,y+7); 
+ doc.setTextColor(29,78,216);doc.setFont('helvetica','bold');doc.setFontSize(val('paperSize')==='A5'?16:20);doc.text(data.documentType==='RECEIPT'?'RECEIPT':'INVOICE',right, y+2,{align:'right'});
+ doc.setTextColor(60,72,92);doc.setFont('helvetica','normal');doc.setFontSize(8);doc.text((data.documentType==='RECEIPT'?'Receipt No.: ':'No.: ')+(data.invoiceNo||'—'),right,y+8,{align:'right'});doc.text('Date: '+(data.invoiceDate||'—'),right,y+13,{align:'right'});
+ y+=Math.max(23,metaLines.length*4+13);doc.setDrawColor(210,220,235);doc.line(margin,y,right,y);y+=7;
+ doc.setTextColor(112,124,145);doc.setFont('helvetica','bold');doc.setFontSize(7);doc.text(data.customerLabel||(data.documentType==='RECEIPT'?'RECEIVED FROM':'BILL TO'),margin,y);y+=5;
+ doc.setTextColor(27,39,60);doc.setFontSize(10);doc.text(data.customerName||'Customer',margin,y);y+=4;
+ doc.setFont('helvetica','normal');doc.setFontSize(8);const cust=[data.customerAddress,data.customerPhone?'Phone: '+data.customerPhone:''].filter(Boolean).join(' | ');if(cust){const lines=doc.splitTextToSize(cust,pageW-2*margin);doc.text(lines,margin,y);y+=lines.length*4;}
+ y+=5;
+ const rows=(data.items||[]).map((it,i)=>[String(i+1),it.description||'—',String(num(it.qty)),it.unit||'',Number(num(it.rate)).toFixed(2),Number(num(it.qty)*num(it.rate)).toFixed(2)]);
+ doc.autoTable({startY:y,head:[['#','Description','Qty','Unit','Rate (INR)','Amount (INR)']],body:rows,theme:'grid',margin:{left:margin,right:margin},styles:{font:'helvetica',fontSize:val('paperSize')==='A5'?7:8,cellPadding:2.2,overflow:'linebreak',textColor:[30,41,59],lineColor:[190,202,220],lineWidth:.2},headStyles:{fillColor:[237,243,255],textColor:[38,61,105],fontStyle:'bold'},columnStyles:{0:{cellWidth:7},1:{cellWidth:'auto'},2:{cellWidth:12,halign:'right'},3:{cellWidth:15},4:{cellWidth:22,halign:'right'},5:{cellWidth:24,halign:'right'}}});
+ y=doc.lastAutoTable.finalY+7;const totalX=right;doc.setFontSize(8);doc.setTextColor(75,87,108);doc.text('Subtotal',totalX-42,y);doc.setTextColor(25,35,55);doc.text('INR '+totals.subtotal.toFixed(2),right,y,{align:'right'});y+=5;
+ doc.setFont('helvetica','bold');doc.setFontSize(11);doc.setTextColor(29,78,216);doc.text('TOTAL',totalX-42,y);doc.text('INR '+totals.total.toFixed(2),right,y,{align:'right'});y+=6;
+ doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(75,87,108);doc.text('Paid: INR '+totals.paid.toFixed(2),right,y,{align:'right'});y+=7;
+ doc.setFont('helvetica','bold');doc.setTextColor(45,57,78);doc.text('Amount in words',margin,y);y+=4;doc.setFont('helvetica','normal');const words=doc.splitTextToSize(amountWords(totals.total),pageW-2*margin);doc.text(words,margin,y);y+=words.length*4+5;
+ if(data.notes){doc.setFont('helvetica','bold');doc.text('Notes / terms',margin,y);y+=4;doc.setFont('helvetica','normal');const noteLines=doc.splitTextToSize(data.notes,pageW-2*margin);if(y+noteLines.length*4+18>doc.internal.pageSize.getHeight()-margin){doc.addPage();y=margin;}doc.text(noteLines,margin,y);y+=noteLines.length*4+8;}
+ if(y+18>doc.internal.pageSize.getHeight()-margin){doc.addPage();y=margin+5;}
+ doc.setDrawColor(90,103,123);doc.line(right-55,y+8,right-5,y+8);doc.line(right-115,y+8,right-65,y+8);doc.setFontSize(7);doc.setTextColor(75,87,108);doc.text('Receiver Signature',right-90,y+12,{align:'center'});doc.text('Authorised Signature',right-30,y+12,{align:'center'});
+ doc.setFontSize(7);doc.setTextColor(130,140,155);doc.text('This is a computer-generated invoice.',pageW/2,doc.internal.pageSize.getHeight()-6,{align:'center'});
+ const safe=(data.invoiceNo||'invoice').replace(/[^a-z0-9_-]/gi,'_');doc.save('LRM-Hospital-'+safe+'.pdf');
+}
+function downloadJson(){let blob=new Blob([JSON.stringify(invoices,null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='invoice-maker-backup-'+today()+'.json';a.click();URL.revokeObjectURL(a.href);}
+function importJson(file){let r=new FileReader();r.onload=()=>{try{let data=JSON.parse(r.result);if(!Array.isArray(data))throw Error('Expected an array of invoices');for(const x of data){if(!x.id)x.id=crypto.randomUUID();let i=invoices.findIndex(y=>y.id===x.id);if(i>=0)invoices[i]=x;else invoices.push(x);}persistLocal();renderHistory();alert('Backup imported.');}catch(e){alert('Could not import backup: '+e.message);}};r.readAsText(file);}
+$('businessName').addEventListener('change',()=>{ $('businessAddress').value = $('businessName').value === 'LRM HOSPITAL (Unit of LRM Hospital)' ? 'Bro. Godfrey Tower, College Veng, Aizawl, Mizoram' : 'Ramhlun Venglai, Aizawl, Mizoram'; updatePreview(); });
+$('addItemBtn').onclick=()=>{items.push({description:'',qty:1,unit:'',rate:0});renderItems();$('amountPaid').value=items.reduce((sum,it)=>sum+num(it.qty)*num(it.rate),0).toFixed(2);updatePreview();};
+$('itemsBody').addEventListener('input',e=>{let el=e.target;if(el.dataset.i===undefined)return;let x=items[+el.dataset.i];x[el.dataset.k]=['description','unit'].includes(el.dataset.k)?el.value:num(el.value);let line=$('line'+el.dataset.i);if(line)line.textContent=money(num(x.qty)*num(x.rate));$('amountPaid').value=items.reduce((sum,it)=>sum+num(it.qty)*num(it.rate),0).toFixed(2);updatePreview();});
+$('itemsBody').addEventListener('click',e=>{let b=e.target.closest('.remove-item');if(b){items.splice(+b.dataset.i,1);renderItems();$('amountPaid').value=items.reduce((sum,it)=>sum+num(it.qty)*num(it.rate),0).toFixed(2);updatePreview();}});
+$('saveBtn').onclick=saveInvoice;$('documentType').addEventListener('change',()=>{$('customerLabel').value=$('documentType').value==='RECEIPT'?'RECEIVED FROM':'BILL TO';const prefix=$('documentType').value==='RECEIPT'?'RCT':'INV';const m=$('invoiceNo').value.match(/^(?:INV|RCT)(.*)$/);if(m)$('invoiceNo').value=prefix+m[1];else if(!$('invoiceNo').value)$('invoiceNo').value=prefix+'-'+new Date().getFullYear()+'-0001';updatePreview();});
+function choosePrintSize(size){$('paperSize').value=size;updatePreview();$('printSizeModal').style.display='none';printInvoice();}
+$('printA4Btn').onclick=()=>choosePrintSize('A4');$('printA5Btn').onclick=()=>choosePrintSize('A5');$('closePrintSizeModal').onclick=()=>{$('printSizeModal').style.display='none';};$('printSizeModal').addEventListener('click',e=>{if(e.target===$('printSizeModal'))$('printSizeModal').style.display='none';});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('printSizeModal').style.display!=='none')$('printSizeModal').style.display='none';});
+$('downloadPdfBtn').onclick=()=>downloadInvoicePdf();$('newBtn').onclick=resetForm;$('resetBtn').onclick=()=>{if(confirm('Clear current invoice form?'))resetForm();};$('printBtn').onclick=()=>printInvoice();$('paperSize').onchange=updatePreview;$('historySearch').oninput=renderHistory;$('historyFromDate').onchange=renderHistory;$('historyToDate').onchange=renderHistory;$('historySort').onchange=renderHistory;$('clearHistoryFiltersBtn').onclick=()=>{$('historySearch').value='';$('historyFromDate').value='';$('historyToDate').value='';$('historySort').value='newest';renderHistory();};$('refreshHistoryBtn').onclick=async()=>{if(db.url&&db.key){try{let online=await fetchOnline();let merged=new Map(invoices.map(x=>[x.id,x]));online.forEach(x=>merged.set(x.id,x));invoices=[...merged.values()].sort((a,b)=>(b.updatedAt||'').localeCompare(a.updatedAt||''));persistLocal();$('dbStatus').textContent='Synced';$('dbStatus').className='status ok';}catch(e){alert('Online refresh failed: '+e.message);}}renderHistory();};
+$('historyTopBtn').onclick=()=>$('historyPanel').scrollIntoView({behavior:'smooth'});
+$('historyList').addEventListener('click',async e=>{let b=e.target.closest('button');if(!b)return;let inv=invoices.find(x=>x.id===b.dataset.id);if(!inv)return;if(b.classList.contains('load-invoice'))loadInvoice(inv);if(b.classList.contains('print-history')){loadInvoice(inv);setTimeout(()=>printInvoice(),100);}if(b.classList.contains('delete-history')){if(confirm('Delete invoice '+inv.invoiceNo+'?')){invoices=invoices.filter(x=>x.id!==inv.id);persistLocal();if(db.url&&db.key){try{await dbRequest('invoices?id=eq.'+encodeURIComponent(inv.id),'DELETE');}catch(err){alert('Deleted locally; online delete failed: '+err.message);}}renderHistory();}}});
+$('logoInput').addEventListener('change',e=>{const file=e.target.files&&e.target.files[0];if(!file)return;if(file.size>2*1024*1024){alert('Please choose a logo smaller than 2 MB.');e.target.value='';return;}if(!/^image\/(png|jpeg|webp|svg\+xml)$/.test(file.type)){alert('Please choose a PNG, JPG, WebP or SVG image.');e.target.value='';return;}const reader=new FileReader();reader.onload=()=>{logoDataUrl=String(reader.result||'');try{localStorage.setItem(LOGOLS,logoDataUrl);updatePreview();}catch(err){logoDataUrl='';alert('Logo could not be saved in this browser. Please use a smaller image.');updatePreview();}};reader.readAsDataURL(file);});
+$('removeLogoBtn').onclick=()=>{logoDataUrl=DEFAULT_LOGO;localStorage.setItem(LOGOLS,DEFAULT_LOGO);$('logoInput').value='';updatePreview();};
+$('exportJsonBtn').onclick=downloadJson;$('importJsonInput').onchange=e=>{if(e.target.files[0])importJson(e.target.files[0]);e.target.value='';};
+$('connectDbBtn').onclick=async()=>{saveDbSettings();if(!db.url||!db.key){alert('Enter Supabase Project URL and anon/publishable key.');return;}if(await testDb()){try{let online=await fetchOnline();let merged=new Map(invoices.map(x=>[x.id,x]));online.forEach(x=>merged.set(x.id,x));invoices=[...merged.values()];persistLocal();renderHistory();alert('Online database connected. Existing local invoices were kept; online invoices loaded.');}catch(e){alert('Connected but could not load invoice history: '+e.message);}}};
+$('disconnectDbBtn').onclick=()=>{db={url:'',key:'',token:''};localStorage.removeItem(DBLS);$('supabaseUrl').value='';$('supabaseKey').value='';$('supabaseToken').value='';$('dbStatus').textContent='Local only';$('dbStatus').className='status';};
+$('copySqlBtn').onclick=()=>navigator.clipboard?.writeText($('sqlText').textContent).then(()=>alert('SQL copied.')).catch(()=>alert('Select and copy the SQL manually.'));
+try{db=JSON.parse(localStorage.getItem(DBLS)||'{}');}catch{db={};}db={url:db.url||'',key:db.key||'',token:db.token||''};$('supabaseUrl').value=db.url;$('supabaseKey').value=db.key;$('supabaseToken').value=db.token;
+loadLocal();items=[{description:'',qty:1,unit:'',rate:0}];$('documentType').value='INVOICE';$('invoiceDate').value=today();$('invoiceNo').value=makeNo();bindForm();renderItems();updatePreview();renderHistory();
+if(db.url&&db.key){$('dbStatus').textContent='Configured';$('dbStatus').className='status warn';}
+</script>
+<script>
+// Local demo login only. Do not use for real patient data; passwords are client-side.
+(function(){
+ const defaults={admin:'LRMAdmin2026',cashier01:'Cashier@123',cashier02:'Cashier@123',cashier03:'Cashier@123',cashier04:'Cashier@123',cashier05:'Cashier@123',cashier06:'Cashier@123'};
+ const recoveryCode='LRM-RESET-2026';
+ function getUsers(){try{return {...defaults,...JSON.parse(localStorage.getItem('lrm_demo_passwords')||'{}')};}catch{return {...defaults};}}
+ const gate=document.getElementById('loginGate'), form=document.getElementById('loginForm'), user=document.getElementById('loginUser'), pass=document.getElementById('loginPass'), err=document.getElementById('loginError');
+ function loggedIn(id){gate.style.display='none';document.getElementById('sessionUser').textContent='User: '+id.toUpperCase();sessionStorage.setItem('lrm_demo_user',id);}
+ form.addEventListener('submit',function(e){e.preventDefault();const id=user.value;if(getUsers()[id]===pass.value){err.textContent='';pass.value='';loggedIn(id);}else{err.textContent='Incorrect User ID or password.';pass.value='';}});
+ document.getElementById('logoutBtn').addEventListener('click',function(){sessionStorage.removeItem('lrm_demo_user');gate.style.display='flex';document.getElementById('sessionUser').textContent='Not logged in';pass.value='';err.textContent='You have logged out.';});
+ const toggle=document.getElementById('forgotToggle'), rf=document.getElementById('recoverForm');
+ toggle.addEventListener('click',()=>{rf.style.display=rf.style.display==='none'?'block':'none';document.getElementById('recoverMessage').textContent='';});
+ rf.addEventListener('submit',function(e){e.preventDefault();const code=document.getElementById('recoverCode').value,newPass=document.getElementById('newPass').value,id=document.getElementById('recoverUser').value,msg=document.getElementById('recoverMessage');if(code!==recoveryCode){msg.style.color='#b91c1c';msg.textContent='Incorrect recovery code.';return;}if(newPass.length<8){msg.style.color='#b91c1c';msg.textContent='Password must be at least 8 characters.';return;}const all=getUsers();all[id]=newPass;const overrides={};Object.keys(all).forEach(k=>{if(all[k]!==defaults[k])overrides[k]=all[k];});localStorage.setItem('lrm_demo_passwords',JSON.stringify(overrides));msg.style.color='#166534';msg.textContent='Password reset successfully. You can now log in with the new password.';document.getElementById('recoverCode').value='';document.getElementById('newPass').value='';});
+ const prior=sessionStorage.getItem('lrm_demo_user');if(prior&&getUsers()[prior])loggedIn(prior);
+})();
+</script>
+</body>
+</html>
